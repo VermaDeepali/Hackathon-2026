@@ -1,0 +1,261 @@
+{
+  "info": {
+    "name": "FusionIQ Auth API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000" },
+    { "key": "token", "value": "" },
+    { "key": "orderId", "value": "" },
+    { "key": "packageId", "value": "" },
+    { "key": "bookingId", "value": "" },
+    { "key": "quotationId", "value": "" },
+    { "key": "quoteId", "value": "" },
+    { "key": "shipmentId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Signup",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Jane Doe\",\n  \"email\": \"jane@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/auth/signup", "host": ["{{baseUrl}}"], "path": ["api", "auth", "signup"] }
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"jane@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/auth/login", "host": ["{{baseUrl}}"], "path": ["api", "auth", "login"] }
+          }
+        },
+        {
+          "name": "Get Me",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/auth/me", "host": ["{{baseUrl}}"], "path": ["api", "auth", "me"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Orders",
+      "item": [
+        {
+          "name": "Create Order",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"orderNumber\": \"ORD-1001\",\n  \"createDate\": \"2026-07-06\",\n  \"status\": \"New\",\n  \"deliveryDate\": \"2026-07-20\",\n  \"incoterm\": \"FOB\",\n  \"hazmats\": \"UN1230\",\n  \"buyerDetails\": { \"name\": \"Acme Corp\", \"address\": \"123 Buyer St, Springfield\" },\n  \"supplierDetails\": { \"name\": \"Global Supplies Inc\", \"location\": \"Shanghai\" },\n  \"origin\": \"Shanghai\",\n  \"destination\": \"Los Angeles\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/orders", "host": ["{{baseUrl}}"], "path": ["api", "orders"] }
+          }
+        },
+        {
+          "name": "Get All Orders",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/orders", "host": ["{{baseUrl}}"], "path": ["api", "orders"] }
+          }
+        },
+        {
+          "name": "Get Order By Id",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/orders/{{orderId}}", "host": ["{{baseUrl}}"], "path": ["api", "orders", "{{orderId}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Packages",
+      "item": [
+        {
+          "name": "Create Package (auto-creates booking)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"orderId\": \"{{orderId}}\",\n  \"materialId\": \"MAT-001\",\n  \"materialGroup\": \"ALB4\",\n  \"quantity\": \"400\",\n  \"dimensions\": \"40x10x20 cm\",\n  \"cargoReady\": \"18/06/2026\",\n  \"quantityToShip\": \"50\",\n  \"grossWeight\": \"20 kg\",\n  \"packageType\": \"Carton\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/packages", "host": ["{{baseUrl}}"], "path": ["api", "packages"] }
+          }
+        },
+        {
+          "name": "Get All Packages",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/packages", "host": ["{{baseUrl}}"], "path": ["api", "packages"] }
+          }
+        },
+        {
+          "name": "Get Package By Id",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/packages/{{packageId}}", "host": ["{{baseUrl}}"], "path": ["api", "packages", "{{packageId}}"] }
+          }
+        },
+        {
+          "name": "Recommend Shipment Mode (AI)",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/packages/{{packageId}}/recommend-mode", "host": ["{{baseUrl}}"], "path": ["api", "packages", "{{packageId}}", "recommend-mode"] }
+          }
+        },
+        {
+          "name": "Set/Override Shipment Mode",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"shipmentMode\": \"Ocean\"\n}" },
+            "url": { "raw": "{{baseUrl}}/api/packages/{{packageId}}/mode", "host": ["{{baseUrl}}"], "path": ["api", "packages", "{{packageId}}", "mode"] }
+          }
+        },
+        {
+          "name": "Recommend Forwarder (AI)",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/packages/{{packageId}}/recommend-forwarder", "host": ["{{baseUrl}}"], "path": ["api", "packages", "{{packageId}}", "recommend-forwarder"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Bookings",
+      "item": [
+        {
+          "name": "Get All Bookings",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/bookings", "host": ["{{baseUrl}}"], "path": ["api", "bookings"] }
+          }
+        },
+        {
+          "name": "Get Booking By Id",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/bookings/{{bookingId}}", "host": ["{{baseUrl}}"], "path": ["api", "bookings", "{{bookingId}}"] }
+          }
+        },
+        {
+          "name": "Update Booking By Package",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"shipmentMode\": \"Ocean\",\n  \"shipmentType\": \"Export\",\n  \"containerType\": \"FCL\",\n  \"originAddress\": \"Shanghai, China\",\n  \"destinationAddress\": \"Los Angeles, USA\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/bookings/package/{{packageId}}", "host": ["{{baseUrl}}"], "path": ["api", "bookings", "package", "{{packageId}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Quotations",
+      "item": [
+        {
+          "name": "Create Quotation",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"packageId\": \"{{packageId}}\",\n  \"mode\": \"Ocean\",\n  \"shipmentType\": \"Export\",\n  \"typeOfMove\": \"Door to Door\",\n  \"incoterm\": \"EXW\",\n  \"origin\": \"Shanghai, China\",\n  \"destination\": \"Los Angeles, USA\",\n  \"hazmat\": \"UN1230\",\n  \"packageType\": \"Crate\",\n  \"numberOfPackages\": \"5\",\n  \"dimensions\": \"120x80x100 cm\",\n  \"totalWeight\": \"1000 kg\",\n  \"quotationRequiredBy\": \"20/07/2026\",\n  \"schedulePickUpDateFrom\": \"10/07/2026\",\n  \"schedulePickUpDateTo\": \"12/07/2026\",\n  \"lastUpdatedDate\": \"06/07/2026\",\n  \"forwarders\": [\"FWD-001\", \"FWD-002\", \"FWD-003\", \"FWD-004\"]\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/quotations", "host": ["{{baseUrl}}"], "path": ["api", "quotations"] }
+          }
+        },
+        {
+          "name": "Get All Quotations",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/quotations", "host": ["{{baseUrl}}"], "path": ["api", "quotations"] }
+          }
+        },
+        {
+          "name": "Get Quotation By Id (includes quotes[])",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/quotations/{{quotationId}}", "host": ["{{baseUrl}}"], "path": ["api", "quotations", "{{quotationId}}"] }
+          }
+        },
+        {
+          "name": "Add Forwarder Quote",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"forwarderId\": \"FWD-002\",\n  \"liner\": \"UECC\",\n  \"priceQuoted\": 454,\n  \"departureDate\": \"12 Jul 2026\",\n  \"transitTime\": \"3 days\",\n  \"quoteValidity\": \"10 Jul 2026\",\n  \"reliability\": 96,\n  \"name\": \"Nexuss Logistic\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/quotations/{{quotationId}}/quotes", "host": ["{{baseUrl}}"], "path": ["api", "quotations", "{{quotationId}}", "quotes"] }
+          }
+        },
+        {
+          "name": "Recommend Quote (AI)",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/quotations/{{quotationId}}/recommend-quote", "host": ["{{baseUrl}}"], "path": ["api", "quotations", "{{quotationId}}", "recommend-quote"] }
+          }
+        },
+        {
+          "name": "Accept/Update Quote",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"status\": \"Selected\"\n}" },
+            "url": { "raw": "{{baseUrl}}/api/quotations/{{quotationId}}/quotes/{{quoteId}}", "host": ["{{baseUrl}}"], "path": ["api", "quotations", "{{quotationId}}", "quotes", "{{quoteId}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Shipments",
+      "item": [
+        {
+          "name": "Create Shipment",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"bookingId\": \"{{bookingId}}\",\n  \"mode\": \"Ocean\",\n  \"shipmentType\": \"Export\",\n  \"typeOfMove\": \"Port to Port\",\n  \"bookingType\": \"Primary\",\n  \"incoterm\": \"FOB\",\n  \"containerType\": \"FCL\",\n  \"estimatedETA\": \"01/08/2026\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/shipments", "host": ["{{baseUrl}}"], "path": ["api", "shipments"] }
+          }
+        },
+        {
+          "name": "Get All Shipments",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/shipments", "host": ["{{baseUrl}}"], "path": ["api", "shipments"] }
+          }
+        },
+        {
+          "name": "Get Shipment By Id",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/shipments/{{shipmentId}}", "host": ["{{baseUrl}}"], "path": ["api", "shipments", "{{shipmentId}}"] }
+          }
+        }
+      ]
+    }
+  ]
+}
